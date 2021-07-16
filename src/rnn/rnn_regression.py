@@ -100,14 +100,15 @@ class RNNRegressionModel:
 
 # 学習
 N = 1000
-T = 20
-A, B, C = 10.0, 2.5, 5.0    # 振幅
-An, Bn, Cn = 0.1, 0.2, 0.1  # ノイズの振幅
-#An, Bn, Cn = 0, 0, 0
+T = 10
+A1, A2, A3 = 10.0, 2.5, 5.0    # 振幅
+An1, An2, An3 = 0.1, 0.2, 0.1  # ノイズの振幅
+F1, F2, F3 = 20, 10, 30        # 振動数
+#An1, An2, An3 = 0, 0, 0
 x = np.concatenate([
-    A*np.sin(np.linspace(0, 40*np.pi, N)) + An*np.random.randn(N),
-    B*np.sin(np.linspace(0, 20*np.pi, N)) + Bn*np.random.randn(N),
-    C*np.sin(np.linspace(0, 80*np.pi, N)) + Cn*np.random.randn(N)
+    A1 * np.sin(np.linspace(0, F1 * 2 * np.pi, N)) + An1 * np.random.randn(N),
+    A2 * np.sin(np.linspace(0, F2 * 2 * np.pi, N)) + An2 * np.random.randn(N),
+    A3 * np.sin(np.linspace(0, F3 * 2 * np.pi, N)) + An3 * np.random.randn(N)
 ]).reshape(3, N).T
 
 #model = RNNRegression(eta=1.0e-4, batch_size=10, T=T, H=50)
