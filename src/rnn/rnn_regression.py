@@ -112,18 +112,21 @@ x = np.concatenate([
 ]).reshape(3, N).T
 
 #model = RNNRegression(eta=1.0e-4, batch_size=10, T=T, H=50)
-model = RNNRegressionModel(eta=1.0e-4, batch_size=10, D=x.shape[1], T=T, H=20)
+model = RNNRegressionModel(eta=1.0e-4, batch_size=10, D=x.shape[1], T=T, H=40)
 model.train(x, 2000)
 print(model.loss[-1])
 
 # 学習曲線
 from matplotlib import pyplot as plt
+fig = plt.figure()
+plt.xlabel('epochs')
+plt.ylabel('loss')
 plt.plot(range(len(model.loss)), model.loss)
-plt.show()
+#plt.show()
+fig.savefig('rnn_regression_loss.png')
 
 
-
-start = 0
+start = 30
 T_corr = 300
 T_pred = 100
 
@@ -137,7 +140,12 @@ for _ in range(T_pred):
 x_pred = np.array(x_pred)
 
 for d in range(x.shape[1]):
-    plt.plot(range(T_corr), x[start:start+T_corr, d], label='a')
-    plt.plot(range(T_corr, T_corr+x_pred.shape[0]), x_pred[:, d], label='b')
+    fig = plt.figure()
+    plt.title(f'variable {d}')
+    plt.xlabel('time')
+    plt.ylabel('value')
+    plt.plot(range(T_corr), x[start:start+T_corr, d], label='actual')
+    plt.plot(range(T_corr, T_corr+x_pred.shape[0]), x_pred[:, d], label='predicted')
     plt.legend()
-    plt.show()
+    #plt.show()
+    fig.savefig(f'rnn_regression_variable{d:02d}.png')
