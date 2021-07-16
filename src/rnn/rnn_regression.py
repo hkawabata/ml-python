@@ -102,9 +102,9 @@ class RNNRegressionModel:
 N = 1000
 T = 10
 A1, A2, A3 = 10.0, 2.5, 5.0    # 振幅
-An1, An2, An3 = 0.1, 0.2, 0.1  # ノイズの振幅
+#An1, An2, An3 = 0.1, 0.2, 0.1  # ノイズの振幅
+An1, An2, An3 = 1.0, 0.5, 1.0  # ノイズの振幅
 F1, F2, F3 = 20, 10, 30        # 振動数
-#An1, An2, An3 = 0, 0, 0
 x = np.concatenate([
     A1 * np.sin(np.linspace(0, F1 * 2 * np.pi, N)) + An1 * np.random.randn(N),
     A2 * np.sin(np.linspace(0, F2 * 2 * np.pi, N)) + An2 * np.random.randn(N),
@@ -127,8 +127,8 @@ fig.savefig('rnn_regression_loss.png')
 
 
 start = 30
-T_corr = 300
-T_pred = 100
+T_corr = 20
+T_pred = 500
 
 x_in = x[start:start+T_corr].copy()
 x_pred = []
@@ -144,8 +144,9 @@ for d in range(x.shape[1]):
     plt.title(f'variable {d}')
     plt.xlabel('time')
     plt.ylabel('value')
-    plt.plot(range(T_corr), x[start:start+T_corr, d], label='actual')
-    plt.plot(range(T_corr, T_corr+x_pred.shape[0]), x_pred[:, d], label='predicted')
+    plt.plot(range(T_corr+T_pred), x[start:start+T_corr+T_pred, d], label='actual')
+    #plt.plot(range(T_corr, T_corr+x_pred.shape[0]), x_pred[:, d], label='predicted')
+    plt.plot(range(T_corr, T_corr + T_pred), x_pred[:, d], label='predicted')
     plt.legend()
     #plt.show()
     fig.savefig(f'rnn_regression_variable{d:02d}.png')
