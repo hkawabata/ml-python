@@ -2,6 +2,7 @@ import numpy as np
 from tqdm import tqdm
 from module.layer import TimeRNNRegression
 
+
 class RNNRegressionModel:
     """
     回帰問題を解く
@@ -46,7 +47,7 @@ class RNNRegressionModel:
         x_next = x_2cycle[1:]
 
         jump = L_in // self.batch_size
-        for e in tqdm(range(epochs)):
+        for _ in tqdm(range(epochs)):
             # バッチデータ生成
             offset = np.random.randint(jump)
             batch_x_prev = np.empty((self.batch_size, L_in, self.D), dtype='f')
@@ -102,7 +103,6 @@ class RNNRegressionModel:
 N = 1000
 T = 10
 A1, A2, A3 = 10.0, 2.5, 5.0    # 振幅
-#An1, An2, An3 = 0.1, 0.2, 0.1  # ノイズの振幅
 An1, An2, An3 = 1.0, 0.5, 1.0  # ノイズの振幅
 F1, F2, F3 = 20, 10, 30        # 振動数
 x = np.concatenate([
@@ -111,7 +111,6 @@ x = np.concatenate([
     A3 * np.sin(np.linspace(0, F3 * 2 * np.pi, N)) + An3 * np.random.randn(N)
 ]).reshape(3, N).T
 
-#model = RNNRegression(eta=1.0e-4, batch_size=10, T=T, H=50)
 model = RNNRegressionModel(eta=1.0e-4, batch_size=10, D=x.shape[1], T=T, H=40)
 model.train(x, 2000)
 print(model.loss[-1])
@@ -122,7 +121,6 @@ fig = plt.figure()
 plt.xlabel('epochs')
 plt.ylabel('loss')
 plt.plot(range(len(model.loss)), model.loss)
-#plt.show()
 fig.savefig('rnn_regression_loss.png')
 
 
@@ -145,8 +143,6 @@ for d in range(x.shape[1]):
     plt.xlabel('time')
     plt.ylabel('value')
     plt.plot(range(T_corr+T_pred), x[start:start+T_corr+T_pred, d], label='actual')
-    #plt.plot(range(T_corr, T_corr+x_pred.shape[0]), x_pred[:, d], label='predicted')
     plt.plot(range(T_corr, T_corr + T_pred), x_pred[:, d], label='predicted')
     plt.legend()
-    #plt.show()
     fig.savefig(f'rnn_regression_variable{d:02d}.png')
