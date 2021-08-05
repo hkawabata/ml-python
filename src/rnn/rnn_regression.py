@@ -121,6 +121,8 @@ fig = plt.figure()
 plt.xlabel('epochs')
 plt.ylabel('loss')
 plt.plot(range(len(model.loss)), model.loss)
+plt.axhline(y=model.loss[-1], linewidth=0.5, color='red', label=f'loss = {model.loss[-1]:.4f}')
+plt.legend()
 fig.savefig('rnn_regression_loss.png')
 
 
