@@ -411,3 +411,48 @@ class TimeRNNClassification:
 
     def reset_state(self):
         self.layers[0].reset_state()
+
+
+class LSTM:
+    def __init__(self, Wx, Wh, b):
+        """
+        Wh : hの重み
+        Wx : xの重み
+        b  : バイアス
+        """
+        self.Wh = Wh  # 全てのRNNブロックで同一の重みを共有
+        self.Wx = Wx  # 全てのRNNブロックで同一の重みを共有
+        self.b = b  # 全てのRNNブロックで同一の重みを共有
+        self.grads = [
+            np.zeros_like(Wx),
+            np.zeros_like(Wh),
+            np.zeros_like(b)
+        ]  # 各RNNブロックが個別に保有
+        self.cache = None
+
+    def forward(self, X, Hprev, is_training=False):
+        """
+        X     : その時刻の入力（行ベクトルを積んだ行列）
+        Hprev : 1つ前の時刻の出力（行ベクトルを積んだ行列）
+        """
+        H = np.tanh(np.dot(X, self.Wx) + np.dot(Hprev, self.Wh) + self.b)
+        if is_training:
+            self.cache = (X, H, Hprev)
+        return H
+
+    def backward(self, dH):
+        X, H, Hprev = self.cache
+        self.cache = 0
+        tmp = dH * (1.0 - H * H)
+
+        dX = np.dot(tmp, self.Wx.T)
+        dHprev = np.dot(tmp, self.Wh.T)
+        dWx = np.dot(X.T, tmp)
+        dWh = np.dot(Hprev.T, tmp)
+        db = tmp.sum(axis=0)
+
+        self.grads[0][...] = dWx
+        self.grads[1][...] = dWh
+        self.grads[2][...] = db
+
+        return dX, dHprev
